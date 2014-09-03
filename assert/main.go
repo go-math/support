@@ -8,19 +8,28 @@ import (
 	"testing"
 )
 
-// Equal asserts that two objects are equal
+// Equal asserts that two objects are equal.
 func Equal(actual, expected interface{}, t *testing.T) {
-	if actual != expected {
-		raise(t, "got %v (%T) instead of %v (%T)", actual, actual, expected, expected)
-	}
-}
+	kind := reflect.TypeOf(actual).Kind()
 
-// DeepEqual asserts that two objects with nontrivial types, such as structs
-// and slices, are equal.
-func DeepEqual(actual, expected interface{}, t *testing.T) {
-	if !reflect.DeepEqual(actual, expected) {
-		raise(t, "got %v (%T) instead of %v (%T)", actual, actual, expected, expected)
+	if kind != reflect.TypeOf(expected).Kind() {
+		goto error
 	}
+
+	if kind == reflect.Slice || kind == reflect.Struct {
+		if !reflect.DeepEqual(actual, expected) {
+			goto error
+		}
+	} else {
+		if actual != expected {
+			goto error
+		}
+	}
+
+	return
+
+error:
+	raise(t, "got %v (%T) instead of %v (%T)", actual, actual, expected, expected)
 }
 
 // Success asserts that the error is nil.
