@@ -3,9 +3,14 @@
 package assert
 
 import (
+	"math"
 	"reflect"
 	"runtime"
 	"testing"
+)
+
+const (
+	epsilon = 1e-8
 )
 
 // Equal asserts that two objects are equal.
@@ -20,8 +25,23 @@ func Equal(actual, expected interface{}, t *testing.T) {
 		if !reflect.DeepEqual(actual, expected) {
 			goto error
 		}
-	} else {
-		if actual != expected {
+	} else if actual != expected {
+		goto error
+	}
+
+	return
+
+error:
+	raise(t, "got %v (%T) instead of %v (%T)", actual, actual, expected, expected)
+}
+
+func AlmostEqual(actual, expected []float64, t *testing.T) {
+	if len(actual) != len(expected) {
+		goto error
+	}
+
+	for i := range actual {
+		if math.Abs(actual[i]-expected[i]) > epsilon {
 			goto error
 		}
 	}
@@ -29,7 +49,7 @@ func Equal(actual, expected interface{}, t *testing.T) {
 	return
 
 error:
-	raise(t, "got %v (%T) instead of %v (%T)", actual, actual, expected, expected)
+	raise(t, "got %v instead of %v", actual, expected)
 }
 
 // Success asserts that the error is nil.
