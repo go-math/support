@@ -17,7 +17,7 @@ func Equal(actual, expected interface{}, t *testing.T) {
 // DeepEqual asserts that two objects with nontrivial types, such as structs
 // and slices, are equal.
 func DeepEqual(actual, expected interface{}, t *testing.T) {
-	if reflect.DeepEqual(actual, expected) {
+	if !reflect.DeepEqual(actual, expected) {
 		t.Fatalf("got %v (%T) instead of %v (%T)", actual, actual, expected, expected)
 	}
 }
