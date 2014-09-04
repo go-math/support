@@ -35,6 +35,9 @@ error:
 	raise(t, "got %v (%T) instead of %v (%T)", actual, actual, expected, expected)
 }
 
+// AlmostEqual asserts that the absolute difference between any corresponding
+// pair of elements of two float64 slices is not more than a predefined small
+// constant, which is 1e-8.
 func AlmostEqual(actual, expected []float64, t *testing.T) {
 	if len(actual) != len(expected) {
 		goto error
