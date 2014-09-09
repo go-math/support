@@ -21,7 +21,7 @@ func Equal(actual, expected interface{}, t *testing.T) {
 		goto error
 	}
 
-	if kind == reflect.Slice || kind == reflect.Struct {
+	if kind == reflect.Slice || kind == reflect.Struct || kind == reflect.Ptr {
 		if !reflect.DeepEqual(actual, expected) {
 			goto error
 		}
