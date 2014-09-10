@@ -35,24 +35,35 @@ error:
 	raise(t, "got %v (%T) instead of %v (%T)", actual, actual, expected, expected)
 }
 
-// AlmostEqual asserts that the absolute difference between any corresponding
-// pair of elements of two float64 slices is not more than a predefined small
-// constant, which is 1e-8.
-func AlmostEqual(actual, expected []float64, t *testing.T) {
+// AlmostEqual asserts that the absolute difference between two float64 values
+// or between the corresponding elements of two []float64 slices is not more
+// than a predefined small constant, which is 1e-8.
+func AlmostEqual(actual, expected interface{}, t *testing.T) {
+	var result bool
+
+	if reflect.TypeOf(actual).Kind() == reflect.Slice {
+		result = almostEqual(actual.([]float64), expected.([]float64))
+	} else {
+		result = almostEqual([]float64{actual.(float64)}, []float64{expected.(float64)})
+	}
+
+	if !result {
+		raise(t, "got %v instead of %v", actual, expected)
+	}
+}
+
+func almostEqual(actual, expected []float64) bool {
 	if len(actual) != len(expected) {
-		goto error
+		return false
 	}
 
 	for i := range actual {
 		if math.Abs(actual[i]-expected[i]) > epsilon {
-			goto error
+			return false
 		}
 	}
 
-	return
-
-error:
-	raise(t, "got %v instead of %v", actual, expected)
+	return true
 }
 
 // Success asserts that the error is nil.
