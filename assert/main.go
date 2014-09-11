@@ -15,18 +15,30 @@ const (
 
 // Equal asserts that two objects are equal.
 func Equal(actual, expected interface{}, t *testing.T) {
-	kind := reflect.TypeOf(actual).Kind()
+	var kind reflect.Kind
+
+	if a, e := reflect.TypeOf(actual), reflect.TypeOf(expected); a == nil || e == nil {
+		if a != nil || e != nil {
+			goto error
+		}
+		return
+	}
+
+	kind = reflect.TypeOf(actual).Kind()
 
 	if kind != reflect.TypeOf(expected).Kind() {
 		goto error
 	}
 
-	if kind == reflect.Slice || kind == reflect.Struct || kind == reflect.Ptr {
+	switch kind {
+	case reflect.Slice, reflect.Struct, reflect.Ptr:
 		if !reflect.DeepEqual(actual, expected) {
 			goto error
 		}
-	} else if actual != expected {
-		goto error
+	default:
+		if actual != expected {
+			goto error
+		}
 	}
 
 	return
@@ -52,20 +64,6 @@ func AlmostEqual(actual, expected interface{}, t *testing.T) {
 	}
 }
 
-func almostEqual(actual, expected []float64) bool {
-	if len(actual) != len(expected) {
-		return false
-	}
-
-	for i := range actual {
-		if math.Abs(actual[i]-expected[i]) > epsilon {
-			return false
-		}
-	}
-
-	return true
-}
-
 // Success asserts that the error is nil.
 func Success(err error, t *testing.T) {
 	if err != nil {
@@ -78,6 +76,20 @@ func Failure(err error, t *testing.T) {
 	if err == nil {
 		raise(t, "expected an error")
 	}
+}
+
+func almostEqual(actual, expected []float64) bool {
+	if len(actual) != len(expected) {
+		return false
+	}
+
+	for i := range actual {
+		if math.Abs(actual[i]-expected[i]) > epsilon {
+			return false
+		}
+	}
+
+	return true
 }
 
 func raise(t *testing.T, format string, args ...interface{}) {
