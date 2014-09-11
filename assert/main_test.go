@@ -13,7 +13,7 @@ func TestEqual(t *testing.T) {
 }
 
 func TestAlmostEqual(t *testing.T) {
-	AlmostEqual(1.0, 1.0 + 1e-10, t)
+	AlmostEqual(1.0, 1.0+1e-10, t)
 	AlmostEqual([]float64{1, 1 + 1e-10}, []float64{1, 1}, t)
 }
 
