@@ -4,17 +4,6 @@ import (
 	"math/rand"
 )
 
-// MakeMatrix generates a random matrix.
-func MakeMatrix(m, n uint32) []float64 {
-	M := make([]float64, m*n)
-
-	for i := range M {
-		M[i] = rand.Float64()
-	}
-
-	return M
-}
-
 // MakeSymMatrix generates a random, symmetric matrix.
 func MakeSymMatrix(m uint32) []float64 {
 	M := make([]float64, m*m)
