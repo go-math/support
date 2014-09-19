@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	epsilon = 1e-8
+	ε = 1e-8
 )
 
 // Equal asserts that two objects are equal.
@@ -84,7 +84,7 @@ func almostEqual(actual, expected []float64) bool {
 	}
 
 	for i := range actual {
-		if math.Abs(actual[i]-expected[i]) > epsilon {
+		if math.Abs(actual[i]-expected[i]) > ε {
 			return false
 		}
 	}
