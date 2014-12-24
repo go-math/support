@@ -2,7 +2,7 @@
 
 The repository hosts two packages:
 
-* [assert](assert), and
+* [assert](assert) and
 * [fixture](fixture).
 
 ## Contributing
