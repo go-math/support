@@ -9,10 +9,6 @@ import (
 	"testing"
 )
 
-const (
-	ε = 1e-8
-)
-
 // Equal asserts that two objects are equal.
 func Equal(actual, expected interface{}, t *testing.T) {
 	var kind reflect.Kind
@@ -83,6 +79,7 @@ func almostEqual(actual, expected []float64) bool {
 		return false
 	}
 
+	ε := math.Sqrt(math.Nextafter(1, 2) - 1)
 	for i := range actual {
 		if math.Abs(actual[i]-expected[i]) > ε {
 			return false
