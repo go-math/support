@@ -22,5 +22,5 @@ func TestSuccess(t *testing.T) {
 }
 
 func TestFailure(t *testing.T) {
-	Failure(errors.New("Inherently broken."), t)
+	Failure(errors.New("had a bad day"), t)
 }
