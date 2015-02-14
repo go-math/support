@@ -89,9 +89,9 @@ func almostEqual(actual, expected []float64) bool {
 	return true
 }
 
-func raise(t *testing.T, format string, args ...interface{}) {
+func raise(t *testing.T, format string, arguments ...interface{}) {
 	if _, file, line, ok := runtime.Caller(2); ok {
 		t.Errorf("%s:%d", file, line)
 	}
-	t.Fatalf(format, args...)
+	t.Fatalf(format, arguments...)
 }
