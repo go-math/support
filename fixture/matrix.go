@@ -4,11 +4,11 @@ import (
 	"math/rand"
 )
 
-// MakeSymMatrix generates a random, symmetric matrix.
-func MakeSymMatrix(m uint32) []float64 {
+// MakeSymmetricMatrix generates a random, symmetric matrix.
+func MakeSymmetricMatrix(m uint) []float64 {
 	M := make([]float64, m*m)
 
-	for i := uint32(0); i < m; i++ {
+	for i := uint(0); i < m; i++ {
 		M[i*m+i] = rand.Float64()
 
 		for j := i + 1; j < m; j++ {
