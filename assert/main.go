@@ -11,52 +11,72 @@ import (
 
 // Equal asserts that two objects are equal.
 func Equal(actual, expected interface{}, t *testing.T) {
-	var kind reflect.Kind
-
-	if a, e := reflect.TypeOf(actual), reflect.TypeOf(expected); a == nil || e == nil {
-		if a != nil || e != nil {
-			goto error
-		}
+	atype, etype := reflect.TypeOf(actual), reflect.TypeOf(expected)
+	if atype == nil && etype == nil {
 		return
+	} else if (atype == nil) != (etype == nil) {
+		raise(t, "got %T instead of %T", actual, expected)
 	}
 
-	kind = reflect.TypeOf(actual).Kind()
-
-	if kind != reflect.TypeOf(expected).Kind() {
-		goto error
+	kind := atype.Kind()
+	if kind != etype.Kind() {
+		raise(t, "got %T instead of %T", actual, expected)
 	}
 
 	switch kind {
 	case reflect.Slice, reflect.Struct, reflect.Ptr:
 		if !reflect.DeepEqual(actual, expected) {
-			goto error
+			raise(t, "got %v instead of %v", actual, expected)
 		}
 	default:
 		if actual != expected {
-			goto error
+			raise(t, "got %v instead of %v", actual, expected)
 		}
 	}
-
-	return
-
-error:
-	raise(t, "got %v (%T) instead of %v (%T)", actual, actual, expected, expected)
 }
 
-// AlmostEqual asserts that the absolute difference between two float64 values
-// or between the corresponding elements of two []float64 slices is not more
-// than a predefined small constant, which is 1e-8.
-func AlmostEqual(actual, expected interface{}, t *testing.T) {
-	var result bool
-
-	if reflect.TypeOf(actual).Kind() == reflect.Slice {
-		result = almostEqual(actual.([]float64), expected.([]float64))
-	} else {
-		result = almostEqual([]float64{actual.(float64)}, []float64{expected.(float64)})
+// EqualWithin asserts that the distance between two scalars or the uniform
+// distance between two vectors is less than the given value.
+func EqualWithin(actual, expected interface{}, ε interface{}, t *testing.T) {
+	typo := reflect.TypeOf(actual)
+	if typo != reflect.TypeOf(expected) {
+		raise(t, "got %v instead of %v", actual, expected)
 	}
 
-	if !result {
+	kind := typo.Kind()
+	if kind != reflect.TypeOf(expected).Kind() {
+		raise(t, "got %T instead of %T", actual, expected)
+	}
+
+	avalue, evalue := reflect.ValueOf(actual), reflect.ValueOf(expected)
+
+	if kind == reflect.Slice {
+		kind = typo.Elem().Kind()
+	} else {
+		avalue = reflect.Append(reflect.MakeSlice(reflect.SliceOf(typo), 0, 1), avalue)
+		evalue = reflect.Append(reflect.MakeSlice(reflect.SliceOf(typo), 0, 1), evalue)
+	}
+
+	if reflect.TypeOf(ε).Kind() != kind {
+		raise(t, "got %T instead of %T", actual, ε)
+	}
+
+	if avalue.Len() != evalue.Len() {
 		raise(t, "got %v instead of %v", actual, expected)
+	}
+
+	actual, expected = avalue.Interface(), evalue.Interface()
+
+	switch kind {
+	case reflect.Float64:
+		actual, expected, ε := actual.([]float64), expected.([]float64), ε.(float64)
+		for i := range actual {
+			if Δ := math.Abs(actual[i] - expected[i]); Δ > ε {
+				raise(t, "got %v instead of %v (delta %v)", actual[i], expected[i], Δ)
+			}
+		}
+	default:
+		panic("the type is not supported")
 	}
 }
 
@@ -72,21 +92,6 @@ func Failure(err error, t *testing.T) {
 	if err == nil {
 		raise(t, "expected an error")
 	}
-}
-
-func almostEqual(actual, expected []float64) bool {
-	if len(actual) != len(expected) {
-		return false
-	}
-
-	ε := math.Sqrt(math.Nextafter(1, 2) - 1)
-	for i := range actual {
-		if math.Abs(actual[i]-expected[i]) > ε {
-			return false
-		}
-	}
-
-	return true
 }
 
 func raise(t *testing.T, format string, arguments ...interface{}) {

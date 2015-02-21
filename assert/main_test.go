@@ -12,9 +12,9 @@ func TestEqual(t *testing.T) {
 	Equal([]uint32{1, 2, 3}, []uint32{1, 2, 3}, t)
 }
 
-func TestAlmostEqual(t *testing.T) {
-	AlmostEqual(1.0, 1.0+1e-10, t)
-	AlmostEqual([]float64{1, 1 + 1e-10}, []float64{1, 1}, t)
+func TestEqualWithin(t *testing.T) {
+	EqualWithin(1.0, 1.0+1e-16, 1e-15, t)
+	EqualWithin([]float64{1, 1 + 1e-16}, []float64{1, 1}, 1e-15, t)
 }
 
 func TestSuccess(t *testing.T) {
