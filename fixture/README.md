@@ -1,6 +1,6 @@
 # Fixture
 
-The package provides a number of functions for managing fixture data in tests.
+The package facilitates managing fixture data in tests.
 
 ## [Documentation][doc]
 
