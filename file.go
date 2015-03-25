@@ -4,8 +4,8 @@ import (
 	"io/ioutil"
 )
 
-// MakeTemporaryFile creates a temporary file and returns its full path.
-func MakeTemporaryFile() string {
+// MakeFile creates a temporary file and returns its full path.
+func MakeFile() string {
 	file, _ := ioutil.TempFile("", "fixture")
 	file.Close()
 
