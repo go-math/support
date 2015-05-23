@@ -1,6 +1,6 @@
-# Fixture [![Build Status][travis-img]][travis-url]
+# Fixture [![Build Status][status-img]][status-url]
 
-The package facilitates managing fixture data in tests.
+The package provides auxiliary routines for testing.
 
 ## [Documentation][doc]
 
@@ -8,8 +8,8 @@ The package facilitates managing fixture data in tests.
 
 1. Fork the project.
 2. Implement your idea.
-3. Create a pull request.
+3. Open a pull request.
 
 [doc]: http://godoc.org/github.com/ready-steady/fixture
-[travis-img]: https://travis-ci.org/ready-steady/fixture.svg?branch=master
-[travis-url]: https://travis-ci.org/ready-steady/fixture
+[status-img]: https://travis-ci.org/ready-steady/fixture.svg?branch=master
+[status-url]: https://travis-ci.org/ready-steady/fixture

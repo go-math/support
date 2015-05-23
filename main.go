@@ -1,4 +1,4 @@
-// Package fixture facilitates managing fixture data in tests.
+// Package fixture provides auxiliary routines for testing.
 package fixture
 
 import (
